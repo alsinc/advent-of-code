@@ -1,0 +1,31 @@
+<html>
+<head>
+<script src="md5.min.js"></script>
+<script type = "text/javascript">
+var hash;
+var i = 0;
+var passchars = 0;
+var pass = "";
+
+while (passchars < 8) {
+    var str = "abbhdwsy" + i;
+    var hash = md5(str);
+    
+    if (hash.substring(0, 5) == "00000") {
+        pass = pass + hash.substring(5, 6);
+        document.write("<p>" + str +  " " + hash + "</p>");
+        passchars++;
+    } else {
+    }
+    i++;
+}
+alert("Done: " + pass);
+</script>
+
+</head>
+<body>
+
+
+    
+</body>
+</html>
