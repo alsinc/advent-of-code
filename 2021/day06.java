@@ -4,7 +4,7 @@ class day06
 {
 	public static List<Integer> readInput()
 	{
-		Scanner scanner = new Scanner(System.in).useDelimiter(",*");
+		Scanner scanner = new Scanner(System.in).useDelimiter(",|\n");
 		List<Integer> list = new ArrayList<>();
 
 		while (scanner.hasNextInt()) {
@@ -62,7 +62,7 @@ class day06
 
 		List<Integer> list = readInput();
 
-		long total = simulate(new ArrayList<>(list), days);
+		long total = simulate(list, days);
 		System.out.println("Total after " + days + " days: " + total + " lanternfish");
 	}
 }
