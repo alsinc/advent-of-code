@@ -11,18 +11,19 @@ struct stack
 
 const int MaxStacks = 10;
 
-static void newStack(struct stack* s)
+static void newStack(struct stack** s)
 {
-    s->capacity = 1;
-    s->data = calloc(s->capacity, sizeof(char));
-    s->count = 0;
+    *s = malloc(sizeof(struct stack));
+    (*s)->capacity = 1;
+    (*s)->data = calloc((*s)->capacity, sizeof(char));
+    (*s)->count = 0;
 }
 
 static void push(struct stack* s, char item)
 {
     if (s->count + 1 > s->capacity) {
         s->capacity = s->capacity * 2;
-        s->data = realloc(s->data, s->capacity);
+        s->data = realloc(s->data, s->capacity * sizeof(char));
     }
     s->data[s->count] = item;
     s->count++;
@@ -72,6 +73,21 @@ static void parseStackLine(char* line, struct stack* stacks[10])
     }
 }
 
+static void copyStacks(struct stack** source, struct stack** dest)
+{
+    for (int s = 0; s < MaxStacks; s++) {
+        if (dest[s]->capacity < source[s]->capacity) {
+            dest[s]->capacity = source[s]->capacity;
+            dest[s]-> data = realloc(dest[s]->data, dest[s]->capacity * sizeof(char));
+        }
+
+        for (int i = 0; i < source[s]->count; i++) {
+            dest[s]->data[i] = source[s]->data[i];
+        }
+        dest[s]->count = source[s]->count;
+    }
+}
+
 static void dumpStacks(struct stack** stacks)
 {
         for (int i = 0; i < MaxStacks; i++) {
@@ -89,13 +105,15 @@ int main(int argc, char** argv)
 {
     char line[500];
     int numtomove, from, to;
-    struct stack **stacks;
+    struct stack **stacks, **stacks2, *tempstack;
 
-    stacks = calloc(10, sizeof(struct stack*));
+    stacks = calloc(MaxStacks, sizeof(struct stack*));
+    stacks2 = calloc(MaxStacks, sizeof(struct stack*));
     for (int i = 0; i < MaxStacks ; i++) {
-        stacks[i] = malloc(sizeof(struct stack));
-        newStack(stacks[i]);
+        newStack(&stacks[i]);
+        newStack(&stacks2[i]);
     }
+    newStack(&tempstack);
 
     while (!feof(stdin)) {
         fgets(line, sizeof(line), stdin);
@@ -108,6 +126,7 @@ int main(int argc, char** argv)
     }
 
     reverseStacks(stacks);
+    copyStacks(stacks, stacks2);
 
     while (!feof(stdin)) {
         if (!fgets(line, sizeof(line), stdin)) {
@@ -120,6 +139,13 @@ int main(int argc, char** argv)
                 char item;
                 item = pop(stacks[from - 1]);
                 push(stacks[to - 1], item);
+                item = pop(stacks2[from -1]);
+                push(tempstack, item);
+            }
+            for (int n = 0; n < numtomove; n++) {
+                char item;
+                item = pop(tempstack);
+                push(stacks2[to - 1], item);
             }
         }
     }
@@ -131,5 +157,15 @@ int main(int argc, char** argv)
         }
     }
     printf("\n");
+
+    dumpStacks(stacks2);
+    printf("Result (part2): ");
+    for (int i = 0; i < MaxStacks; i++) {
+        if (stacks2[i]->count) {
+            printf("%c", stacks2[i]->data[stacks2[i]->count-1]);
+        }
+    }
+    printf("\n");
+
     return 0;
 }
