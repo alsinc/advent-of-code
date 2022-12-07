@@ -13,7 +13,7 @@ const int MaxStacks = 10;
 
 static void newStack(struct stack* s)
 {
-    s->capacity = MaxStacks;
+    s->capacity = 1;
     s->data = calloc(s->capacity, sizeof(char));
     s->count = 0;
 }
@@ -119,7 +119,6 @@ int main(int argc, char** argv)
             for (int n = 0; n < numtomove; n++) {
                 char item;
                 item = pop(stacks[from - 1]);
-                printf("Popped: %c from %d\n", item, from);
                 push(stacks[to - 1], item);
             }
         }
