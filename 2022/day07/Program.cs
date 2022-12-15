@@ -8,6 +8,7 @@ namespace AdventOfCode
         private static Directory CurrentDir = RootDir;
         private static string? InputLine;
         private static Int64 Part1Size = 0;
+        private static Int64 Part2Size = Int64.MaxValue;
 
         static private void CommandChangeDir(string DirectoryName)
         {
@@ -66,7 +67,25 @@ namespace AdventOfCode
 
             if (dirsize < 100000) {
                 Part1Size += dirsize;
-                Console.WriteLine("Directory size of {0} is {1}", dir.Name, dirsize);
+            }
+            return dirsize;
+        }
+
+        private static Int64 Walk2(Directory dir, Int64 needToFree)
+        {
+            Int64 dirsize = 0;
+            foreach  (var i in dir.Items) {
+                if (i.Value is Directory && i.Key != "..") {
+                    dirsize += Walk2((Directory)i.Value, needToFree);
+                } else if (i.Value is File) {
+                    dirsize += ((File)i.Value).Size;
+                }
+            }
+
+            if (dirsize >= needToFree) {
+                if (dirsize < Part2Size) {
+                    Part2Size = dirsize;
+                }
             }
             return dirsize;
         }
@@ -96,8 +115,18 @@ namespace AdventOfCode
                 }
             }
 
-            Walk(RootDir);
+            var totalUsed = Walk(RootDir);
             Console.WriteLine("Part 1: {0}", Part1Size);
+
+            Console.WriteLine("Total Used: {0}", totalUsed);
+            var freeSpace = 70000000 - totalUsed;
+            Console.WriteLine("Free Space: {0}", freeSpace);
+
+            var needToFree = 30000000 - freeSpace;
+            Console.WriteLine("Need to free: {0}", needToFree);
+
+            Walk2(RootDir, needToFree);
+            Console.WriteLine("Part 2: {0}", Part2Size);
         }
     }
 }
