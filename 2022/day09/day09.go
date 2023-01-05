@@ -13,13 +13,14 @@ type CoOrdinate struct {
 func main() {
 	var scanner = bufio.NewScanner(os.Stdin)
 	var line string
-	var headx = 0
-	var heady = 0
+	var head CoOrdinate
 	var tail CoOrdinate
 	var m map[CoOrdinate]bool
 
 	m = make(map[CoOrdinate]bool)
 
+	head.X = 0
+	head.Y = 0
 	tail.X = 0
 	tail.Y = 0
 
@@ -28,25 +29,25 @@ func main() {
 	for scanner.Scan() {
 		var direction string
 		var distance int
-		var vy int
 		var vx int
+		var vy int
 
 		line = scanner.Text()
 
 		fmt.Sscanf(line, "%s %d", &direction, &distance)
 
 		if direction == "D" {
-			vx = -1
-			vy = 0
+			vx = 0
+			vy = -1
 		} else if direction == "U" {
+			vx = 0
+			vy = 1
+		} else if direction == "R" {
 			vx = 1
 			vy = 0
-		} else if direction == "R" {
-			vy = 1
-			vx = 0
 		} else if direction == "L" {
-			vy = -1
-			vx = 0
+			vx = -1
+			vy = 0
 		} else {
 			fmt.Printf("OOPS, unknown direction %s", direction)
 		}
@@ -55,11 +56,11 @@ func main() {
 			var dx int
 			var dy int
 
-			headx += vy
-			heady += vx
+			head.X += vx
+			head.Y += vy
 
-			dx = headx - tail.X
-			dy = heady - tail.Y
+			dx = head.X - tail.X
+			dy = head.Y - tail.Y
 
 			if dx < -1 || dx > 1 || dy < -1 || dy > 1 {
 				//fmt.Printf("move tail: head(%d, %d), tail(%d, %d) dx(%d,%d)\n", headx, heady, tailx, taily, dx, dy)
