@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type CoOrdinate struct {
@@ -14,17 +15,24 @@ func main() {
 	var scanner = bufio.NewScanner(os.Stdin)
 	var line string
 	var head CoOrdinate
-	var tail CoOrdinate
-	var m map[CoOrdinate]bool
+	var tailsize int = 1
 
-	m = make(map[CoOrdinate]bool)
+	if len(os.Args) == 2 {
+		tailsize, _ = strconv.Atoi(os.Args[1])
+	}
+
+	m := make(map[CoOrdinate]bool)
+	tail := make([]CoOrdinate, tailsize)
 
 	head.X = 0
 	head.Y = 0
-	tail.X = 0
-	tail.Y = 0
 
-	m[tail] = true
+	for i := 0; i < len(tail); i++ {
+		tail[i].X = head.X
+		tail[i].Y = head.Y
+	}
+
+	m[tail[tailsize-1]] = true
 
 	for scanner.Scan() {
 		var direction string
@@ -59,28 +67,33 @@ func main() {
 			head.X += vx
 			head.Y += vy
 
-			dx = head.X - tail.X
-			dy = head.Y - tail.Y
-
-			if dx < -1 || dx > 1 || dy < -1 || dy > 1 {
-				//fmt.Printf("move tail: head(%d, %d), tail(%d, %d) dx(%d,%d)\n", headx, heady, tailx, taily, dx, dy)
-
-				if dx < 0 {
-					tail.X = tail.X - 1
+			for t := 0; t < tailsize; t++ {
+				if t == 0 {
+					dx = head.X - tail[0].X
+					dy = head.Y - tail[0].Y
+				} else {
+					dx = tail[t-1].X - tail[t].X
+					dy = tail[t-1].Y - tail[t].Y
 				}
 
-				if dx > 0 {
-					tail.X = tail.X + 1
-				}
+				if dx < -1 || dx > 1 || dy < -1 || dy > 1 {
+					if dx < 0 {
+						tail[t].X = tail[t].X - 1
+					}
 
-				if dy < 0 {
-					tail.Y = tail.Y - 1
-				}
+					if dx > 0 {
+						tail[t].X = tail[t].X + 1
+					}
 
-				if dy > 0 {
-					tail.Y = tail.Y + 1
+					if dy < 0 {
+						tail[t].Y = tail[t].Y - 1
+					}
+
+					if dy > 0 {
+						tail[t].Y = tail[t].Y + 1
+					}
+					m[tail[tailsize-1]] = true
 				}
-				m[tail] = true
 			}
 		}
 	}
