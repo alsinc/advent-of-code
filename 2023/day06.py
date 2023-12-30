@@ -1,15 +1,21 @@
 import logging
+import math
 import sys
 
 def count_wins(time, distance):
-    result = 0
-    for t in range(time+1):
-        d = -t*t + t*time
+    t1 = (-time + (time**2 - 4 * distance)**0.5) / -2
+    t2 = (-time - (time**2 - 4 * distance)**0.5) / -2
 
-        if d > distance:
-            result += 1
-    return result
+    res = math.floor(t2) - math.ceil(t1) + 1
+    if math.trunc(t1) == t1:
+        res -=1
 
+    if math.trunc(t2) == t2:
+        res -=1
+
+    logging.debug("t1 = %s, t2 = %s, res = %s", t1, t2, res)
+
+    return res
 
 def part1(races):
     result = 1
