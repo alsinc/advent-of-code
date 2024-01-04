@@ -2,7 +2,7 @@ import logging
 import sys
 
 
-def next_number(numbers):
+def extrapolate_number(numbers, before):
     logging.debug("next_ number: start")
     diffs = []
 
@@ -12,11 +12,13 @@ def next_number(numbers):
         diffs.append(diff)
         last = num
 
-    diffs_sorted = sorted(diffs)
-    if diffs_sorted[0] == diffs_sorted[-1] and diffs_sorted[0] == 0:
+    if diffs.count(0) == len(diffs):
         x = numbers[0]
     else:
-        x = numbers[-1] + next_number(diffs)
+        if before:
+            x = numbers[0] - extrapolate_number(diffs, before)
+        else:
+            x = numbers[-1] + extrapolate_number(diffs, before)
 
     logging.debug("returning: %s", x)
     return x
@@ -24,8 +26,9 @@ def next_number(numbers):
 
 def part1(report):
     result = 0
+    logging.debug("Part 1: Start")
     for history in report:
-        next_num = next_number(history)
+        next_num = extrapolate_number(history, False)
         logging.debug("Next Number: %s", next_num)
         result += next_num
     print(f"Part 1: {result}")
@@ -33,6 +36,11 @@ def part1(report):
 
 def part2(report):
     result = 0
+    logging.debug("Part 2: Start")
+    for history in report:
+        next_num = extrapolate_number(history, True)
+        logging.debug("Next Number: %s", next_num)
+        result += next_num
     print(f"Part 2: {result}")
 
 
