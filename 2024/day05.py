@@ -50,17 +50,13 @@ def main():
             if len(update) % 2 == 1:
                 part1 += update[int((len(update) + 1) / 2) - 1]
             else:
-                print("OH KNOW")
+                print("OH NO")
         else:
-            incorrect_updates.append(update)
-
-    for update in incorrect_updates:
-        sort_update(update, rules)
-
-        if len(update) % 2 == 1:
-            part2 += update[int((len(update) + 1) / 2) - 1]
-        else:
-            print("OH KNOW")
+            sort_update(update, rules)
+            if len(update) % 2 == 1:
+                part2 += update[int((len(update) + 1) / 2) - 1]
+            else:
+                print("OH NO")
 
     print(f"Part 1: {part1}")
     print(f"Part 2: {part2}")
