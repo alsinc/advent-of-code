@@ -37,7 +37,6 @@ def sort_update(update, rules):
 def main():
     part1 = 0
     part2 = 0
-    incorrect_updates = []
     (rules, updates) = get_data("day05.input")
 
     for update in updates:
