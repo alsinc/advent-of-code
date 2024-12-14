@@ -1,4 +1,4 @@
-with open('day01.input', 'r') as f:
+with open("day01.input", "r") as f:
     lines = [line.strip().split() for line in f.readlines()]
 
 a1 = sorted([int(a[0]) for a in lines])
@@ -13,4 +13,3 @@ for n in range(len(a1)):
 
 print(f"Part 1: {t1}")
 print(f"Part 2: {t2}")
-
